@@ -1,6 +1,6 @@
 <base target="_blank">
 
-# Stochastic Compartmental Model for SAR-COV-2
+# Stochastic Compartmental Model for SAR-COV-2 (TO BE UPDATED)
 
 This project is conceived by members of SIMID group during the COVID19 pandemic to estimate and explore the effect of social distancing and vaccine uptake in Belgium. The project is hosted on [GitHub repository](https://github.com/lwillem/stochastic_model_BE.git).
 
