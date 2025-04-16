@@ -1,0 +1,86 @@
+# History files
+.Rhistory
+.Rapp.history
+
+# Session Data files
+.RData
+
+# User-specific files
+.Ruserdata
+
+# Example code in package build process
+*-Ex.R
+
+# Output files from R CMD build
+/*.tar.gz
+
+# Output files from R CMD check
+/*.Rcheck/
+
+# RStudio files
+.Rproj.user/
+
+# produced vignettes
+vignettes/*.html
+vignettes/*.pdf
+
+# OAuth2 token, see https://github.com/hadley/httr/releases/tag/v0.3
+.httr-oauth
+
+# knitr and R markdown default cache directories
+*_cache/
+/cache/
+
+# Temporary files created by R markdown
+*.utf8.md
+*.knit.md
+
+# R Environment Variables
+.Renviron
+repo_stochastic_model_BE.Rproj
+data/downloads
+*.zip
+Rplots.pdf
+fit_mean.rds
+fit_stochastic.rds
+R/original_code/drafts
+data/OneDrive_1_*
+sm_out.rds
+incidence_sm12_n100.pdf
+behavior_incidence_sm13_MAR_Q19_behavior.pdf
+uptake_incidence_sm13_MAR_Q19_behavior.pdf
+CoMix_sm.pdf
+scratch
+wave_*_cnt_home.csv
+wave_*_cnt_work.csv
+wave_*_cnt_school.csv
+wave_*_cnt_leisure.csv
+wave_*_cnt_transport.csv
+wave_*_cnt_otherplace.csv
+
+
+fit_extended.rds
+sm_mean.rds
+survey_belgium2020_comix_up_to_wave*
+data/VOC_WGS/downloads
+data/uptake/uptake_region/plot
+README.html
+data/results_technical_notes
+data/uptake/uptake_booster/plot
+data/uptake/uptake_children/plot
+data/config/local
+unit_testing/scm_*.rds
+hosp_surge_perhospital.csv
+hosp_surge/COVID19BE_CLINIC.csv
+~$*xlsx
+
+
+#additional elements
+output/
+stochastic_model_BE.Rproj
+*.DS_Store
+data/uptake/uptake_booster_dec20/plot
+wenseleers_spread omicron logistic fit*.png
+data/uptake/uptake_manuscript/plot
+data/hosp_surge/COVID19BE_CLINIC.csv
+data/cache
