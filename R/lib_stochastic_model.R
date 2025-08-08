@@ -723,150 +723,150 @@ get_latest_incidence_data_xlsx <- function(enable_data_reuse = TRUE, sel_region=
 }
 
 get_latest_incidence_data <- function(enable_data_reuse = TRUE, sel_region=NA){
+  be_ref_data <- read.csv('data/downloads/covid19_reference_data_20230915_2108_belgium.csv',header = T,sep=',')
+  # be_ref_data <- get_observed_incidence_data(enable_data_reuse=enable_data_reuse,
+  #                                            sel_region=sel_region)
   
-  be_ref_data <- get_observed_incidence_data(enable_data_reuse=enable_data_reuse,
-                                             sel_region=sel_region)
+  # # set gdrive on LW's computer
+  # gdrive_data_dir <- '~/Google Drive/nCov2019 - research/Shared COVID-19 drive with third parties (confidential information)/Data Sciensano/Last Update'
+  # if(!dir.exists(gdrive_data_dir)){
+  #   #return(be_ref_data)
+  #   gdrive_data_dir <- './data/hosp_surge'
+  # }
   
-  # set gdrive on LW's computer
-  gdrive_data_dir <- '~/Google Drive/nCov2019 - research/Shared COVID-19 drive with third parties (confidential information)/Data Sciensano/Last Update'
-  if(!dir.exists(gdrive_data_dir)){
-    #return(be_ref_data)
-    gdrive_data_dir <- './data/hosp_surge'
-  }
+  # # get file name for latest reference data
+  # ref_data_file_name <- file.path('data/downloads',paste0('covid19_reference_data_',gsub('-','',Sys.Date()),'.csv'))
   
-  # get file name for latest reference data
-  ref_data_file_name <- file.path('data/downloads',paste0('covid19_reference_data_',gsub('-','',Sys.Date()),'.csv'))
-  
-  # retrieve available hosp surge data
-  latest_data_file <- dir(gdrive_data_dir,pattern = 'hosp_surge_perhospital',full.names = T)
+  # # retrieve available hosp surge data
+  # latest_data_file <- dir(gdrive_data_dir,pattern = 'hosp_surge_perhospital',full.names = T)
 
-  # select most recent one
-  latest_data_file <- latest_data_file[order(file.info(latest_data_file)$mtime,decreasing = T) == 1]
+  # # select most recent one
+  # latest_data_file <- latest_data_file[order(file.info(latest_data_file)$mtime,decreasing = T) == 1]
   
-  # add hour stamp to ref file
-  if(Sys.Date() == as.Date(file.info(latest_data_file)$mtime)){
-    ref_data_file_name <- gsub('.csv',paste0('_',format(file.info(latest_data_file)$mtime,'%H%M'),'.csv'),ref_data_file_name)
-  } else{
-    ref_data_file_name <- gsub('.csv','_0000.csv',ref_data_file_name)
-  }
+  # # add hour stamp to ref file
+  # if(Sys.Date() == as.Date(file.info(latest_data_file)$mtime)){
+  #   ref_data_file_name <- gsub('.csv',paste0('_',format(file.info(latest_data_file)$mtime,'%H%M'),'.csv'),ref_data_file_name)
+  # } else{
+  #   ref_data_file_name <- gsub('.csv','_0000.csv',ref_data_file_name)
+  # }
 
-  # specify region
-  if(is.na(sel_region)){
-    sel_region <- get_region(1)
-  }
-  ref_data_file_name <- gsub('.csv',paste0('_',sel_region,'.csv'),ref_data_file_name)
+  # # specify region
+  # if(is.na(sel_region)){
+  #   sel_region <- get_region(1)
+  # }
+  # ref_data_file_name <- gsub('.csv',paste0('_',sel_region,'.csv'),ref_data_file_name)
   
-  if(enable_data_reuse && file.exists(ref_data_file_name)){
-    ref_data      <- read.table(ref_data_file_name,sep=',',header=T)
-    ref_data$date <- as.Date(ref_data$date)
-    return(ref_data)
-  }
+  # if(enable_data_reuse && file.exists(ref_data_file_name)){
+  #   ref_data      <- read.table(ref_data_file_name,sep=',',header=T)
+  #   ref_data$date <- as.Date(ref_data$date)
+  #   return(ref_data)
+  # }
   
-  # read hosp surve file and set default region
-  db_hosp_surge_all           <- read.csv(latest_data_file)
+  # # read hosp surve file and set default region
+  # db_hosp_surge_all           <- read.csv(latest_data_file)
 
-  if('Confirmed.patients.other.pathology' %in% names(db_hosp_surge_all)){
-    db_hosp_surge_all$NewPatientsOtherPathology <- db_hosp_surge_all$Confirmed.patients.other.pathology
-    db_hosp_surge_all$ICUIn <- db_hosp_surge_all$ICU.in
-  }
+  # if('Confirmed.patients.other.pathology' %in% names(db_hosp_surge_all)){
+  #   db_hosp_surge_all$NewPatientsOtherPathology <- db_hosp_surge_all$Confirmed.patients.other.pathology
+  #   db_hosp_surge_all$ICUIn <- db_hosp_surge_all$ICU.in
+  # }
   
-  # override dataset if regional data is required  
-  if(sel_region != 'belgium'){
+  # # override dataset if regional data is required  
+  # if(sel_region != 'belgium'){
     
-    dim(db_hosp_surge_all)
-    names(db_hosp_surge_all)
-    table(db_hosp_surge_all$Region)
-    db_hosp_surge_all$region_en <- gsub('Brussel','brussels',db_hosp_surge_all$Region)
-    db_hosp_surge_all$region_en <- gsub('Vlaanderen','flanders',db_hosp_surge_all$region_en)
-    db_hosp_surge_all$region_en <- gsub('Walloni\xeb','wallonia',db_hosp_surge_all$region_en)
+  #   dim(db_hosp_surge_all)
+  #   names(db_hosp_surge_all)
+  #   table(db_hosp_surge_all$Region)
+  #   db_hosp_surge_all$region_en <- gsub('Brussel','brussels',db_hosp_surge_all$Region)
+  #   db_hosp_surge_all$region_en <- gsub('Vlaanderen','flanders',db_hosp_surge_all$region_en)
+  #   db_hosp_surge_all$region_en <- gsub('Walloni\xeb','wallonia',db_hosp_surge_all$region_en)
     
-    db_hosp_surge_all <- db_hosp_surge_all[!is.na(db_hosp_surge_all$region_en),]
-    db_hosp_surge_all <- db_hosp_surge_all[db_hosp_surge_all$region_en == sel_region,]
-    dim(db_hosp_surge_all)
-  } 
+  #   db_hosp_surge_all <- db_hosp_surge_all[!is.na(db_hosp_surge_all$region_en),]
+  #   db_hosp_surge_all <- db_hosp_surge_all[db_hosp_surge_all$region_en == sel_region,]
+  #   dim(db_hosp_surge_all)
+  # } 
 
-    db_hosp_surge <- aggregate(. ~ Date, 
-                               data = db_hosp_surge_all[,c('Date',
-                                                            'NewPatientsNotReferredHospital',
-                                                            'NewPatientsOtherPathology',
-                                                            'Confirmed.patients.in.hospital',
-                                                            'Confirmed.patients.in.ICU',
-                                                            'ICUIn',
-                                                            'Mortality')],
-                               FUN = sum, na.rm=T,
-                               na.action = na.pass)
+  #   db_hosp_surge <- aggregate(. ~ Date, 
+  #                              data = db_hosp_surge_all[,c('Date',
+  #                                                           'NewPatientsNotReferredHospital',
+  #                                                           'NewPatientsOtherPathology',
+  #                                                           'Confirmed.patients.in.hospital',
+  #                                                           'Confirmed.patients.in.ICU',
+  #                                                           'ICUIn',
+  #                                                           'Mortality')],
+  #                              FUN = sum, na.rm=T,
+  #                              na.action = na.pass)
   
-    dim(db_hosp_surge)
-    range(db_hosp_surge$Date)
-    names(db_hosp_surge)[1] <- 'Row.Labels'
-    names(db_hosp_surge)[-1] <- paste0('Sum.of.',names(db_hosp_surge)[-1])
+  #   dim(db_hosp_surge)
+  #   range(db_hosp_surge$Date)
+  #   names(db_hosp_surge)[1] <- 'Row.Labels'
+  #   names(db_hosp_surge)[-1] <- paste0('Sum.of.',names(db_hosp_surge)[-1])
  
   
-  # if new hospital data available, add
-  db_hosp_surge$date                 <- as.Date(db_hosp_surge$Row.Labels)
-  sel_hosp_surge                     <- !db_hosp_surge$date %in% be_ref_data$date
-  if(any(sel_hosp_surge)){
-    ref_data_extra                     <- be_ref_data[1:sum(sel_hosp_surge),]
-    ref_data_extra[]                   <- NA
-    ref_data_extra$date                <- db_hosp_surge[sel_hosp_surge,'Row.Labels']
-    ref_data_extra$hospital_admissions <- db_hosp_surge[sel_hosp_surge,'Sum.of.NewPatientsNotReferredHospital']
-    ref_data_extra$hospital_load       <- db_hosp_surge[sel_hosp_surge,'Sum.of.Confirmed.patients.in.hospital']
-    ref_data_extra$icu_load            <- db_hosp_surge[sel_hosp_surge,'Sum.of.Confirmed.patients.in.ICU']
-    ref_data_extra$region              <- sel_region
+  # # if new hospital data available, add
+  # db_hosp_surge$date                 <- as.Date(db_hosp_surge$Row.Labels)
+  # sel_hosp_surge                     <- !db_hosp_surge$date %in% be_ref_data$date
+  # if(any(sel_hosp_surge)){
+  #   ref_data_extra                     <- be_ref_data[1:sum(sel_hosp_surge),]
+  #   ref_data_extra[]                   <- NA
+  #   ref_data_extra$date                <- db_hosp_surge[sel_hosp_surge,'Row.Labels']
+  #   ref_data_extra$hospital_admissions <- db_hosp_surge[sel_hosp_surge,'Sum.of.NewPatientsNotReferredHospital']
+  #   ref_data_extra$hospital_load       <- db_hosp_surge[sel_hosp_surge,'Sum.of.Confirmed.patients.in.hospital']
+  #   ref_data_extra$icu_load            <- db_hosp_surge[sel_hosp_surge,'Sum.of.Confirmed.patients.in.ICU']
+  #   ref_data_extra$region              <- sel_region
     
-    be_ref_data                        <- rbind(be_ref_data,ref_data_extra)
-    be_ref_data$date                   <- as.Date(be_ref_data$date)
-  }
+  #   be_ref_data                        <- rbind(be_ref_data,ref_data_extra)
+  #   be_ref_data$date                   <- as.Date(be_ref_data$date)
+  # }
   
-  # add ICU admissions and hospital mortality
-  be_ref_data <- merge(data.frame(date=as.Date(db_hosp_surge$Row.Labels),
-                                  # hospital_admissions = db_hosp_surge$Sum.of.NewPatientsNotReferredHospital,
-                                  # hospital_load = db_hosp_surge$Sum.of.Confirmed.patients.in.hospital,
-                                  # icu_load = db_hosp_surge$Sum.of.Confirmed.patients.in.ICU,
-                                  icu_admissions=db_hosp_surge$Sum.of.ICUIn,
-                                  # region = db_hosp_surge$Sum.of.region_en,
-                                  hospital_mortality = db_hosp_surge$Sum.of.Mortality,
-                                  hospital_admissions_other = db_hosp_surge$Sum.of.NewPatientsOtherPathology
-                       ),
-                       be_ref_data,
-                       by='date',
-                       all = T)
+  # # add ICU admissions and hospital mortality
+  # be_ref_data <- merge(data.frame(date=as.Date(db_hosp_surge$Row.Labels),
+  #                                 # hospital_admissions = db_hosp_surge$Sum.of.NewPatientsNotReferredHospital,
+  #                                 # hospital_load = db_hosp_surge$Sum.of.Confirmed.patients.in.hospital,
+  #                                 # icu_load = db_hosp_surge$Sum.of.Confirmed.patients.in.ICU,
+  #                                 icu_admissions=db_hosp_surge$Sum.of.ICUIn,
+  #                                 # region = db_hosp_surge$Sum.of.region_en,
+  #                                 hospital_mortality = db_hosp_surge$Sum.of.Mortality,
+  #                                 hospital_admissions_other = db_hosp_surge$Sum.of.NewPatientsOtherPathology
+  #                      ),
+  #                      be_ref_data,
+  #                      by='date',
+  #                      all = T)
   
-  # add hospital exit
-  be_ref_data$hospital_exit <-  be_ref_data$hospital_discharges +
-                                  be_ref_data$hospital_mortality
+  # # add hospital exit
+  # be_ref_data$hospital_exit <-  be_ref_data$hospital_discharges +
+  #                                 be_ref_data$hospital_mortality
   
-  # add hospital recovery
-  be_ref_data$hospital_recovery <- -(c(0,diff(be_ref_data$hospital_load)) 
-                                     + be_ref_data$hospital_mortality
-                                     - be_ref_data$hospital_admissions)
+  # # add hospital recovery
+  # be_ref_data$hospital_recovery <- -(c(0,diff(be_ref_data$hospital_load)) 
+  #                                    + be_ref_data$hospital_mortality
+  #                                    - be_ref_data$hospital_admissions)
   
-  # add 7day mean hospital recovery
-  be_ref_data$hospital_recovery_7dmean <- round(rollmean(be_ref_data$hospital_recovery,k=7,align='center',fill=NA))
-  be_ref_data$hospital_recovery_7dmean[be_ref_data$hospital_recovery_7dmean<0] <- 0
+  # # add 7day mean hospital recovery
+  # be_ref_data$hospital_recovery_7dmean <- round(rollmean(be_ref_data$hospital_recovery,k=7,align='center',fill=NA))
+  # be_ref_data$hospital_recovery_7dmean[be_ref_data$hospital_recovery_7dmean<0] <- 0
   
-  # print CLI update
-  print(be_ref_data[nrow(be_ref_data),c('date',
-                                        'hospital_admissions',
-                                        'hospital_admissions_other',
-                                        'hospital_load',
-                                        'icu_load',
-                                        'region')])
+  # # print CLI update
+  # print(be_ref_data[nrow(be_ref_data),c('date',
+  #                                       'hospital_admissions',
+  #                                       'hospital_admissions_other',
+  #                                       'hospital_load',
+  #                                       'icu_load',
+  #                                       'region')])
   
-  # add hospital admission age distribution
-  age_dist_hosp_mat <- get_hospital_age_distr(bool_use_default = FALSE , num_days = nrow(be_ref_data))
-  age_dist_hosp <- data.frame(date = be_ref_data$date[1:ncol(age_dist_hosp_mat)],
-                              t(age_dist_hosp_mat))
-  names(age_dist_hosp)[-1] <- paste0('prop_hospital_admission_age',1:(ncol(age_dist_hosp)-1))
-  head(age_dist_hosp)
+  # # add hospital admission age distribution
+  # age_dist_hosp_mat <- get_hospital_age_distr(bool_use_default = FALSE , num_days = nrow(be_ref_data))
+  # age_dist_hosp <- data.frame(date = be_ref_data$date[1:ncol(age_dist_hosp_mat)],
+  #                             t(age_dist_hosp_mat))
+  # names(age_dist_hosp)[-1] <- paste0('prop_hospital_admission_age',1:(ncol(age_dist_hosp)-1))
+  # head(age_dist_hosp)
   
-  be_ref_data <- merge(be_ref_data,
-                       age_dist_hosp,
-                       by='date',
-                       all = T)
+  # be_ref_data <- merge(be_ref_data,
+  #                      age_dist_hosp,
+  #                      by='date',
+  #                      all = T)
   
-  # save updated file
-  write.table(be_ref_data,file=ref_data_file_name,sep=',',row.names = F)
+  # # save updated file
+  # write.table(be_ref_data,file=ref_data_file_name,sep=',',row.names = F)
   
   # return updated dataset
   return(be_ref_data)
