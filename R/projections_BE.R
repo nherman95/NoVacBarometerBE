@@ -106,8 +106,8 @@ cnt_adjust_date  <- c('2022-09-01',  # restart june 2022
 
 
 # number of model parameter sets (=chains), stochastic realisations and time horizon
-num_chains          <- 2
-num_stochastic_real <- 1
+num_chains          <- 30
+num_stochastic_real <- 4
 #num_days_sim        <- 519
 num_days_sim <- sim_date2day('2023-07-01')
 
